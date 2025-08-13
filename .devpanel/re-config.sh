@@ -18,7 +18,7 @@
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 if [ -n "$DP_HOSTNAME" ]; then
-    sed -i "s|APP_URL=http://127.0.0.1:8000|APP_URL=http://${DP_HOSTNAME}|" "$APP_ROOT/.env.local"
+    sed -i "s|APP_URL=http://127.0.0.1:8000|APP_URL=https://${DP_HOSTNAME}|" "$APP_ROOT/.env.local"
 fi
 
 # Extract DB name from the connect string
