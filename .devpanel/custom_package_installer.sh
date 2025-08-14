@@ -28,12 +28,12 @@ fi
 
 #== Composer install.
 cd $APP_ROOT
-sudo usermod -a -G www-data www
-sudo chown -R www:www-data /var/www/html
-sudo chmod -R 775 /var/www/html
+# sudo usermod -a -G www-data www
+# sudo chown -R www:www-data /var/www/html
+# sudo chmod -R 775 /var/www/html
 
-# chown -R www-data:www-data /var/www/html/var /var/www/html/public /home/www/.composer
-# chmod -R 775 /var/www/html/var /var/www/html/public /home/www/.composer
+chown -R www-data:www-data var/ public/ /home/www/.composer/
+chmod -R 775 var/ public/ /home/www/.composer/
 
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   cd $APP_ROOT && composer install;
