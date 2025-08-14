@@ -32,9 +32,38 @@ sudo usermod -a -G www-data www
 # sudo chown -R www:www-data /var/www/html
 # sudo chmod -R 775 /var/www/html
 
-sudo chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html /home/www/.composer/
-sudo chmod -R 775 /var/www/html /home/www/.composer/
-sudo chmod -R 777 /var/www/html/public /var/www/html/var
+# sudo chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html /home/www/.composer/
+# sudo chmod -R 775 /var/www/html /home/www/.composer/
+# sudo chmod -R 777 /var/www/html/public /var/www/html/var
+
+set -e
+
+# Default to www-data if not set
+: "${APACHE_RUN_USER:=www-data}"
+: "${APACHE_RUN_GROUP:=www-data}"
+
+# Show who we are
+echo "Running as: $(whoami)"
+
+# Function to safe-chown
+safe_chown() {
+  local path="$1"
+  if [ -e "$path" ]; then
+    if id "$APACHE_RUN_USER" &>/dev/null && id -g "$APACHE_RUN_GROUP" &>/dev/null; then
+      sudo chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} "$path"
+      sudo chmod -R 775 "$path"
+      echo "Fixed permissions for $path"
+    else
+      echo "⚠ User/group $APACHE_RUN_USER:$APACHE_RUN_GROUP not found, skipping $path"
+    fi
+  else
+    echo "⚠ Path $path does not exist, skipping"
+  fi
+}
+
+safe_chown "/var/www/html/var"
+safe_chown "/var/www/html/public"
+safe_chown "/home/www/.composer"
 
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   cd $APP_ROOT && composer install;
