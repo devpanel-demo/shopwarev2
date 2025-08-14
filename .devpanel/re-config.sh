@@ -38,6 +38,8 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     bin/console cache:clear
     # sudo chmod -R 777 /var/www/html/public /var/www/html/var
     sudo bin/console system:install --basic-setup --force
+    sudo chown -R www-data:www-data var/
+    sudo chmod -R 775 var/
     bin/console cache:clear
 
     # Allow composer plugin without prompt
