@@ -36,9 +36,9 @@ cd $APP_ROOT
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   # cd $APP_ROOT && composer install;
   cd $APP_ROOT
-  mkdir -p vendor var public files
-  # sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
-  # sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  sudo mkdir -p vendor var public files
+  sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
   # composer install;
 
   # Ensure directories exist
