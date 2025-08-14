@@ -65,7 +65,8 @@ safe_chown "/var/www/html/var"
 safe_chown "/var/www/html/public"
 safe_chown "/home/www/.composer"
 
-sudo chmod -R 775 /var/www/html/var/ /var/www/html/public/ /home/www/.composer/
+sudo chmod -R 775 /var/www/html
+sudo chmod -R 777 /var/www/html/var/ /var/www/html/public/ /home/www/.composer/
 
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   cd $APP_ROOT && composer install;
