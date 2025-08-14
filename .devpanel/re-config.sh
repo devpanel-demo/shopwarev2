@@ -35,8 +35,9 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
 
     echo '> Install shopware package';
     cd $APP_ROOT
+    bin/console cache:clear
     # sudo chmod -R 777 /var/www/html/public /var/www/html/var
-    sudo bin/console system:install --basic-setup
+    sudo bin/console system:install --basic-setup --force
     bin/console cache:clear
 
     # Allow composer plugin without prompt
