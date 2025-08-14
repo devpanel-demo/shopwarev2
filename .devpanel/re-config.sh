@@ -18,8 +18,10 @@
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 if [ -n "$DP_HOSTNAME" ]; then
+  if ! grep -q '^APP_URL=' "$APP_ROOT/.env.local"; then
     # sed -i "s|APP_URL=http://127.0.0.1:8000|APP_URL=https://${DP_HOSTNAME}|" "$APP_ROOT/.env.local"
     echo "APP_URL=http://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
+  fi
 fi
 
 # Extract DB name from the connect string
@@ -29,11 +31,13 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     echo "Database '$DB_NAME' exists. Running Shopware install..."
     SAFE_CONNECT_STRING=$(printf '%s' "$CONNECT_STRING" | sed -e 's/[&|/$\\]/\\&/g')
     #sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${SAFE_CONNECT_STRING}\"|" "$APP_ROOT/.env.local"
-    echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
+    if ! grep -q '^DATABASE_URL=' "$APP_ROOT/.env.local"; then
+      echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
+    fi
 
     echo '> Install shopware package';
     cd $APP_ROOT
-    #sudo chmod -R 777 /var/www/html/public /var/www/html/var
+    sudo chmod -R 777 /var/www/html/public /var/www/html/var
     sudo bin/console system:install --basic-setup
     bin/console cache:clear
 
