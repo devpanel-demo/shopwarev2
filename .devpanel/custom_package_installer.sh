@@ -31,10 +31,12 @@ cd $APP_ROOT
 sudo usermod -a -G www-data www
 # sudo chown -R www:www-data /var/www/html
 # sudo chmod -R 775 /var/www/html
+echo "User ${APACHE_RUN_USER}:${APACHE_RUN_GROUP}"
+echo whoami
 
 sudo chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html /home/www/.composer/
 sudo chmod -R 775 /var/www/html /home/www/.composer/
-sudo chmod -R 777 public/ var/
+sudo chmod -R 777 /var/www/html/public /var/www/html/var
 
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   cd $APP_ROOT && composer install;
