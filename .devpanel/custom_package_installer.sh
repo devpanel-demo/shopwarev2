@@ -45,6 +45,10 @@ set -e
 sudo chmod -R 775 /var/www/html
 # sudo chmod -R 777 /var/www/html/var/ /var/www/html/public/ /home/www/.composer/
 
+sudo mkdir -p "$APP_ROOT/vendor"
+sudo chown -R www:www "$APP_ROOT"
+sudo chmod -R 775 "$APP_ROOT"
+
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   cd $APP_ROOT && composer install;
 fi
