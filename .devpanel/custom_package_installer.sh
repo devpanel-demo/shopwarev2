@@ -32,7 +32,7 @@ sudo usermod -a -G www-data www
 # sudo chown -R www:www-data /var/www/html
 # sudo chmod -R 775 /var/www/html
 
-sudo chown -R www:www-data /var/www/html /home/www/.composer/
+sudo chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html /home/www/.composer/
 sudo chmod -R 775 /var/www/html /home/www/.composer/
 
 if [[ -f "$APP_ROOT/composer.json" ]]; then
