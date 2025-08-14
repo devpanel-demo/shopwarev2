@@ -37,7 +37,22 @@ if [[ -f "$APP_ROOT/composer.json" ]]; then
   # cd $APP_ROOT && composer install;
   cd $APP_ROOT
   sudo mkdir -p vendor var public files
-  sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  # sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  # sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  # composer install;
+
+  # Ensure directories exist
+  sudo mkdir -p vendor var public
+
+  # Fix permissions
+  APP_USER=${APACHE_RUN_USER:-www-data}
+  APP_GROUP=${APACHE_RUN_GROUP:-www-data}
+  sudo chown -R "$APP_USER":"$APP_GROUP" vendor/ var/ public/ files/ .env.local composer.json composer.lock
   sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
-  composer install;
+
+  # Run Composer
+  composer install
+
+  # Clear and warm cache after install
+  bin/console cache:clear
 fi
