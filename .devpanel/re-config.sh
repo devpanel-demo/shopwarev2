@@ -38,8 +38,8 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     bin/console cache:clear
     # sudo chmod -R 777 /var/www/html/public /var/www/html/var
     sudo bin/console system:install --basic-setup
-    # sudo chown -R www-data:www-data var/ public/
-    # sudo chmod -R 775 var/ public/
+    sudo chown -R www-data:www-data var/ public/
+    sudo chmod -R 775 var/ public/
     bin/console cache:clear
 
     # Allow composer plugin without prompt
@@ -49,6 +49,9 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     # Install profiler and other dev tools, eg Faker for demo data generation
     echo '> Install dev-tools'
     composer require --dev shopware/dev-tools
+
+    # bin/build-administration.sh
+    # bin/build-storefront.sh
 
     echo "> Import database"
     cd $APP_ROOT
