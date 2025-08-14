@@ -27,6 +27,9 @@ if [[ ! -n "$APACHE_RUN_GROUP" ]]; then
 fi
 
 #== Composer install.
+sudo usermod -a -G www-data www
+sudo chown -R www:www-data /var/www/html
+sudo chmod -R 775 /var/www/html
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   cd $APP_ROOT && composer install;
 fi

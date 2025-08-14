@@ -15,8 +15,6 @@
 # For GNU Affero General Public License see <https://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
-sudo chown -R www:www /var/www/html
-sudo chmod -R 775 /var/www/html
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 if [ -n "$DP_HOSTNAME" ]; then
