@@ -29,7 +29,7 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     echo "Database '$DB_NAME' exists. Running Shopware install..."
     SAFE_CONNECT_STRING=$(printf '%s' "$CONNECT_STRING" | sed -e 's/[&|/$\\]/\\&/g')
     #sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${SAFE_CONNECT_STRING}\"|" "$APP_ROOT/.env.local"
-    echo "DATABASE_URL=\"${SAFE_CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
+    echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
 
     echo '> Install shopware package';
     cd $APP_ROOT
