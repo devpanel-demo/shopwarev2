@@ -42,8 +42,17 @@ set -e
 : "${APACHE_RUN_USER:=www-data}"
 : "${APACHE_RUN_GROUP:=www-data}"
 
-# Show who we are
-echo "Running as: $(whoami)"
+sudo chmod -R 775 /var/www/html
+# sudo chmod -R 777 /var/www/html/var/ /var/www/html/public/ /home/www/.composer/
+
+if [[ -f "$APP_ROOT/composer.json" ]]; then
+  cd $APP_ROOT && composer install;
+fi
+
+# sudo chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html /home/www/.composer/
+# sudo chmod -R 775 /var/www/html /home/www/.composer/
+# sudo chmod -R 777 /var/www/html/public /var/www/html/var
+
 
 # Function to safe-chown
 safe_chown() {
@@ -64,14 +73,3 @@ safe_chown() {
 safe_chown "/var/www/html/var"
 safe_chown "/var/www/html/public"
 safe_chown "/home/www/.composer"
-
-sudo chmod -R 775 /var/www/html
-sudo chmod -R 777 /var/www/html/var/ /var/www/html/public/ /home/www/.composer/
-
-if [[ -f "$APP_ROOT/composer.json" ]]; then
-  cd $APP_ROOT && composer install;
-fi
-
-# sudo chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html /home/www/.composer/
-# sudo chmod -R 775 /var/www/html /home/www/.composer/
-# sudo chmod -R 777 /var/www/html/public /var/www/html/var
