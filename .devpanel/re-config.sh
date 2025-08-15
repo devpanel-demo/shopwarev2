@@ -43,7 +43,7 @@ fi
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 if [ -n "$DP_HOSTNAME" ]; then
   if ! grep -q '^APP_URL=' "$APP_ROOT/.env.local"; then
-    echo "APP_URL=https://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
+    echo "APP_URL=http://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
   fi
 fi
 
