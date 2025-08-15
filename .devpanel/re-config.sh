@@ -61,7 +61,7 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     cd $APP_ROOT
     bin/console cache:clear
     # sudo chmod -R 777 /var/www/html/public /var/www/html/var
-    sudo bin/console system:install --basic-setup --force
+    sudo bin/console system:install --basic-setup --create-database
     bin/console database:migrate
     bin/console database:migrate --all
 
