@@ -15,11 +15,35 @@
 # For GNU Affero General Public License see <https://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
+if [[ -f "$APP_ROOT/composer.json" ]]; then
+  # cd $APP_ROOT && composer install;
+  cd $APP_ROOT
+  sudo mkdir -p vendor var public files
+  sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  # composer install;
+
+  # Ensure directories exist
+  # sudo mkdir -p vendor var public
+
+  # Fix permissions
+  # APP_USER=${APACHE_RUN_USER:-www-data}
+  # APP_GROUP=${APACHE_RUN_GROUP:-www-data}
+  # sudo chown -R "$APP_USER":"$APP_GROUP" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+  # sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+
+  # Run Composer
+  composer install
+
+  # Clear and warm cache after install
+  bin/console cache:clear
+fi
+
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 if [ -n "$DP_HOSTNAME" ]; then
   if ! grep -q '^APP_URL=' "$APP_ROOT/.env.local"; then
-    echo "APP_URL=http://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
+    echo "APP_URL=https://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
   fi
 fi
 
