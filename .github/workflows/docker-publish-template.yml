@@ -53,15 +53,16 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for MySQL from webserver
         run: |
-          echo "Waiting for MySQL..."
+          echo "Waiting for MySQL from webserver container..."
           for i in {1..30}; do
-            if docker exec ${{ job.services.mysql.id }} mysqladmin ping -h localhost -u root -proot --silent; then
-              echo "MySQL is up!"
+            if docker exec ${{ job.services.webserver.id }} \
+              mysqladmin ping -h mysql -uuser -ppassword --silent; then
+              echo "MySQL is reachable from webserver!"
               break
             fi
-            echo "MySQL not ready yet..."
+            echo "Still waiting..."
             sleep 2
           done
 
