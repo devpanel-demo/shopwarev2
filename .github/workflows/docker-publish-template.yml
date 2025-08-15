@@ -53,6 +53,18 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL..."
+          for i in {1..30}; do
+            if docker exec ${{ job.services.mysql.id }} mysqladmin ping -h localhost -u root -proot --silent; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "MySQL not ready yet..."
+            sleep 2
+          done
+
       - name: Setup Shopware
         run: |
           echo "PREPARE DIR FOR INSTALL"
