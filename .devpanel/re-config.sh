@@ -15,30 +15,7 @@
 # For GNU Affero General Public License see <https://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
-if [[ -f "$APP_ROOT/composer.json" ]]; then
-  # cd $APP_ROOT && composer install;
-  cd $APP_ROOT
-  sudo mkdir -p vendor var public files
-  sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
-  sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
-  # composer install;
-
-  # Ensure directories exist
-  # sudo mkdir -p vendor var public
-
-  # Fix permissions
-  # APP_USER=${APACHE_RUN_USER:-www-data}
-  # APP_GROUP=${APACHE_RUN_GROUP:-www-data}
-  # sudo chown -R "$APP_USER":"$APP_GROUP" vendor/ var/ public/ files/ .env.local composer.json composer.lock
-  # sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
-
-  # Run Composer
-  composer install
-
-  # Clear and warm cache after install
-  bin/console cache:clear
-fi
-
+echo '> Update .env file'
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 if [ -n "$DP_HOSTNAME" ]; then
@@ -57,13 +34,36 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
       echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
     fi
 
+    echo '> Install composer at re-config'
+    if [[ -f "$APP_ROOT/composer.json" ]]; then
+      # cd $APP_ROOT && composer install;
+      cd $APP_ROOT
+      sudo mkdir -p vendor var public files
+      sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+      sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+      # composer install;
+
+      # Ensure directories exist
+      # sudo mkdir -p vendor var public
+
+      # Fix permissions
+      # APP_USER=${APACHE_RUN_USER:-www-data}
+      # APP_GROUP=${APACHE_RUN_GROUP:-www-data}
+      # sudo chown -R "$APP_USER":"$APP_GROUP" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+      # sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+
+      # Run Composer
+      composer install
+
+      # Clear and warm cache after install
+      bin/console cache:clear
+    fi
+
     echo '> Install shopware package';
     cd $APP_ROOT
     bin/console cache:clear
     # sudo chmod -R 777 /var/www/html/public /var/www/html/var
     sudo bin/console system:install --basic-setup --create-database
-    bin/console database:migrate
-    bin/console database:migrate --all
 
     sudo chown -R www-data:www-data var/ public/
     sudo chmod -R 775 var/ public/
