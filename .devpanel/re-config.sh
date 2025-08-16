@@ -15,6 +15,11 @@
 # For GNU Affero General Public License see <https://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
+cd $APP_ROOT
+sudo mkdir -p vendor var public files
+sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+
 echo '> Update .env file'
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
@@ -24,8 +29,6 @@ if [ -n "$DP_HOSTNAME" ]; then
   fi
 fi
 
-# Extract DB name from the connect string
-DB_NAME=$(echo "$CONNECT_STRING" | cut -d'/' -f4)
 # Check if database exists
 if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null; then
     echo "Database '$DB_NAME' exists. Running Shopware install..."
@@ -37,10 +40,10 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     echo '> Install composer at re-config'
     if [[ -f "$APP_ROOT/composer.json" ]]; then
       # cd $APP_ROOT && composer install;
-      cd $APP_ROOT
-      sudo mkdir -p vendor var public files
-      sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
-      sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
+      # cd $APP_ROOT
+      # sudo mkdir -p vendor var public files
+      # sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
+      # sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
       # composer install;
 
       # Ensure directories exist
