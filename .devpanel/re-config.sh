@@ -20,6 +20,12 @@ sudo mkdir -p vendor var public files
 sudo chown -R "$(whoami)":"$(whoami)" vendor/ var/ public/ files/ .env.local composer.json composer.lock
 sudo chmod -R 775 vendor/ var/ public/ files/ .env.local composer.json composer.lock
 
+if [ -f "$APP_ROOT/.env.local" ]; then
+  echo "✅ .env.local exists"
+else
+  echo "❌ .env.local does not exist"
+fi
+
 echo '> Update .env file'
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
@@ -28,7 +34,7 @@ if [ -n "$DP_HOSTNAME" ]; then
     echo "APP_URL=http://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
   fi
 fi
-
+echo "Conect string: ${CONNECT_STRING}"
 # Check if database exists
 if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null; then
     echo "Database '$DB_NAME' exists. Running Shopware install..."
