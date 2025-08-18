@@ -34,7 +34,10 @@ if [ -n "$DP_HOSTNAME" ]; then
     echo "APP_URL=http://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
   fi
 fi
-echo "Conect string: ${CONNECT_STRING}"
+echo "> Conect string: ${CONNECT_STRING}"
+echo '> DB info'
+printenv | grep DB
+
 # Check if database exists
 if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null; then
     echo "Database '$DB_NAME' exists. Running Shopware install..."
@@ -63,6 +66,7 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
 
       # Run Composer
       composer install
+      echo '> Composer installed'
 
       # Clear and warm cache after install
       bin/console cache:clear
