@@ -95,3 +95,7 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
 else
     echo "Database '$DB_NAME' does not exist. Skipping install."
 fi
+
+echo "> Host name: ${DP_HOSTNAME}"
+echo '> DB info v2'
+printenv | grep DB
