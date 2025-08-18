@@ -68,14 +68,11 @@ jobs:
 
       - name: Setup Shopware
         run: |
-          # echo "PREPARE DIR FOR INSTALL"
-          # docker exec ${{ job.services.webserver.id }} bash -c "sudo rm -rf \$APP_ROOT && sudo mkdir -p \$APP_ROOT"
-          # docker exec ${{ job.services.webserver.id }} bash -c "sudo cp -r /app/. \$APP_ROOT/."
           echo "PREPARE DIR FOR INSTALL"
-          docker exec ${{ job.services.webserver.id }} bash -c 'sudo rm -rf $APP_ROOT && sudo mkdir -p $APP_ROOT'
-          docker exec ${{ job.services.webserver.id }} bash -c 'sudo cp -r /app/. $APP_ROOT/.'
-          docker exec ${{ job.services.webserver.id }} bash -c 'sudo chown -R www:www $APP_ROOT'
-          docker exec ${{ job.services.webserver.id }} bash -c 'export && cd $APP_ROOT && ls -al'
+          docker exec ${{ job.services.webserver.id }} bash -c "sudo rm -rf \$APP_ROOT && sudo mkdir -p \$APP_ROOT"
+          docker exec ${{ job.services.webserver.id }} bash -c "sudo cp -r /app/. \$APP_ROOT/."
+          docker exec ${{ job.services.webserver.id }} bash -c "sudo chown -R www:www \$APP_ROOT && chmod +x \$APP_ROOT/.devpanel/init-container.sh"
+          docker exec ${{ job.services.webserver.id }} bash -c "export && cd \$APP_ROOT && ls -al"
           echo "SET UP GIT"
           docker exec ${{ job.services.webserver.id }} bash -c 'git config --global --add safe.directory $APP_ROOT'
           echo "INSTALL CUSTOM PACKAGE"

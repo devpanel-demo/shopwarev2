@@ -77,19 +77,20 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     sudo chmod -R 775 var/ public/
     bin/console cache:clear
 
-    # Allow composer plugin without prompt
-    echo '> allow-plugins'
-    composer config --no-plugins allow-plugins.php-http/discovery true
+    # # Allow composer plugin without prompt
+    # echo '> allow-plugins'
+    # composer config --no-plugins allow-plugins.php-http/discovery true
 
-    # Install profiler and other dev tools, eg Faker for demo data generation
-    echo '> Install dev-tools'
-    composer require --dev shopware/dev-tools
-
-    # bin/build-administration.sh
-    # bin/build-storefront.sh
+    # # Install profiler and other dev tools, eg Faker for demo data generation
+    # echo '> Install dev-tools'
+    # composer require --dev shopware/dev-tools
 
     echo "> Import database"
-    APP_ENV=prod bin/console framework:demodata && APP_ENV=prod bin/console dal:refresh:index
+    # APP_ENV=prod bin/console framework:demodata && APP_ENV=prod bin/console dal:refresh:index
+    if [[ -f "$APP_ROOT/.devpanel/dumps/shopware.sql" ]]; then
+      echo  'Extract mysql files ...'
+      mysql -h$DB_HOST -P$DB_PORT -u$DB_USER -p$DB_PASSWORD $DB_NAME < $APP_ROOT/.devpanel/dumps/shopware.sql
+    fi
 
     bin/console cache:clear
 else
