@@ -71,7 +71,7 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
 
     echo '> Install shopware package';
     # sudo chmod -R 777 /var/www/html/public /var/www/html/var
-    sudo bin/console system:install --basic-setup
+    sudo bin/console system:install --basic-setup --force
 
     sudo chown -R www-data:www-data var/ public/
     sudo chmod -R 775 var/ public/
