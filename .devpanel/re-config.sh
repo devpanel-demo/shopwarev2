@@ -37,11 +37,11 @@ ENCODED_PASS=$(urlencode "$DB_PASSWORD")
 echo '> Update .env file'
 # Update .env.local file
 CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${ENCODED_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
-# if [ -n "$DP_HOSTNAME" ]; then
-#   if ! grep -q '^APP_URL=' "$APP_ROOT/.env.local"; then
-#     echo "APP_URL=http://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
-#   fi
-# fi
+if [ -n "$DP_HOSTNAME" ]; then
+  if ! grep -q '^APP_URL=' "$APP_ROOT/.env.local"; then
+    echo "APP_URL=http://${DP_HOSTNAME}" >> "$APP_ROOT/.env.local"
+  fi
+fi
 
 # Check if database exists
 if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null; then
