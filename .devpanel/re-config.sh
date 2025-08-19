@@ -72,6 +72,8 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
     APP_ENV=prod bin/console framework:demodata && APP_ENV=prod bin/console dal:refresh:index
 
     bin/console cache:clear
+
+    echo "> Successful, please refresh your web page."
 else
     echo "Database '$DB_NAME' does not exist. Skipping install."
 fi
