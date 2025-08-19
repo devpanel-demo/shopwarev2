@@ -78,7 +78,7 @@ jobs:
           echo "INSTALL CUSTOM PACKAGE"
           docker exec ${{ job.services.webserver.id }} bash -c "cd \$APP_ROOT && bash .devpanel/custom_package_installer.sh"
           echo "INSTALL SHOPWARE"
-          docker exec ${{ job.services.webserver.id }} bash -c "cd \$APP_ROOT && bash .devpanel/re-config.sh && bash .devpanel/init.sh"
+          docker exec ${{ job.services.webserver.id }} bash -c "cd \$APP_ROOT && bash .devpanel/re-config.sh"
           docker exec ${{ job.services.webserver.id }} bash -c "cd \$APP_ROOT && ls -al"
 
       - name: Login to Docker Hub
