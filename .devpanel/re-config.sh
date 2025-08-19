@@ -47,9 +47,11 @@ CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${ENCODED_PASS}@${DB_HOST}:${DB_PORT}/
 if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null; then
     echo "Database '$DB_NAME' exists. Running Shopware install..."
     SAFE_CONNECT_STRING=$(printf '%s' "$CONNECT_STRING" | sed -e 's/[&|/$\\]/\\&/g')
-    # if ! grep -q '^DATABASE_URL=' "$APP_ROOT/.env.local"; then
-    #   echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
-    # fi
+    if grep -q '^DATABASE_URL=' "$APP_ROOT/.env.local"; then
+      sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${SAFE_CONNECT_STRING}\"|" "$APP_ROOT/.env.local"
+    else
+      echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
+    fi
 
     export DATABASE_URL="${CONNECT_STRING}"
 
@@ -73,10 +75,6 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
 
     echo "> Import database"
     APP_ENV=prod bin/console framework:demodata && APP_ENV=prod bin/console dal:refresh:index
-    # if [[ -f "$APP_ROOT/.devpanel/dumps/shopware.sql" ]]; then
-    #   echo  'Extract mysql files ...'
-    #   mysql -h$DB_HOST -P$DB_PORT -u$DB_USER -p$DB_PASSWORD $DB_NAME < $APP_ROOT/.devpanel/dumps/shopware.sql
-    # fi
 
     bin/console cache:clear
 else
