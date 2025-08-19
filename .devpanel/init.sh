@@ -15,44 +15,43 @@
 # For GNU Affero General Public License see <https://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
+cd $APP_ROOT
+
+# URL-encode function (POSIX safe)
+urlencode() {
+    local raw="$1"
+    local length=${#raw}
+    local i char
+    for (( i = 0; i < length; i++ )); do
+        char="${raw:$i:1}"
+        case "$char" in
+            [a-zA-Z0-9.~_-]) printf '%s' "$char" ;;
+            *) printf '%%%02X' "'$char" ;;
+        esac
+    done
+}
+ENCODED_PASS=$(urlencode "$DB_PASSWORD")
+echo '> Update .env file'
 # Update .env.local file
-CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+CONNECT_STRING="${DB_DRIVER}://${DB_USER}:${ENCODED_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 
-# Replace the placeholder in .env.local
-if [ -n "$DP_HOSTNAME" ]; then
-    sed -i "s|APP_URL=http://127.0.0.1:8000|APP_URL=${DP_HOSTNAME}|" "$APP_ROOT/.env.local"
-fi
-
-# Extract DB name from the connect string
-DB_NAME=$(echo "$CONNECT_STRING" | cut -d'/' -f4)
 # Check if database exists
 if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null; then
     echo "Database '$DB_NAME' exists. Running Shopware install..."
-    SAFE_CONNECT_STRING=$(printf '%s' "$CONNECT_STRING" | sed -e 's/[&|/$\\]/\\&/g')
-    sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${SAFE_CONNECT_STRING}\"|" "$APP_ROOT/.env.local"
 
-    echo '> Install shopware package';
-    cd $APP_ROOT
-    sudo bin/console system:install --basic-setup
+    # Escape special chars for sed
+    SAFE_CONNECT_STRING=$(printf '%s' "$CONNECT_STRING" | sed -e 's/[&/\]/\\&/g')
 
-    # Allow composer plugin without prompt
-    echo '> allow-plugins'
-    composer config --no-plugins allow-plugins.php-http/discovery true
-
-    # Install profiler and other dev tools, eg Faker for demo data generation
-    echo '> Install dev-tools'
-    composer require --dev shopware/dev-tools
-
-    echo '> Build admin, storefront'
-    bin/build-administration.sh
-    bin/build-storefront.sh
-    #bin/console assets:install --force
-    bin/console assets:install
+    if grep -q '^DATABASE_URL=' "$APP_ROOT/.env.local"; then
+      sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${SAFE_CONNECT_STRING}\"|" "$APP_ROOT/.env.local"
+    else
+      echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
+    fi
 
     echo "> Import database"
-    cd $APP_ROOT
     APP_ENV=prod bin/console framework:demodata && APP_ENV=prod bin/console dal:refresh:index
-    #mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < ".devpanel/dumps/shopware.sql"
+
+    bin/console cache:clear
 else
     echo "Database '$DB_NAME' does not exist. Skipping install."
 fi
