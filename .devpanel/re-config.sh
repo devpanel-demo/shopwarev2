@@ -53,11 +53,6 @@ if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAM
       echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
     fi
 
-    export DATABASE_URL="${CONNECT_STRING}"
-
-    # Debug check
-    echo "DATABASE_URL set to: $DATABASE_URL"
-
     echo '> Install shopware package';
     sudo bin/console system:install --basic-setup --force
 
