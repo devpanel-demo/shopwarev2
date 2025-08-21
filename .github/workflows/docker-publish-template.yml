@@ -51,7 +51,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
         volumes:
-          - .github/mysql.cnf:/etc/mysql/conf.d/my.cnf
+          - ${{ github.workspace }}/.github/mysql.cnf:/etc/mysql/conf.d/my.cnf
 
     steps:
       - name: Set up Docker Environment
