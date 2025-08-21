@@ -63,7 +63,7 @@ mkdir files
 sudo chown -R $APACHE_RUN_USER:$APACHE_RUN_GROUP public/ files/
 
 echo ">>> Install shopware package";
-sudo -E bin/console system:install --basic-setup --force --skip-trigger
+sudo -E bin/console system:install --basic-setup --force
 
 echo ">>> allow-plugins";
 composer config --no-plugins allow-plugins.php-http/discovery true
