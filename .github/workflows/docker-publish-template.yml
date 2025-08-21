@@ -51,7 +51,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
         volumes:
-          - /tmp/mysql-cnf:/etc/mysql/conf.d
+          - /home/runner/mysql-cnf:/etc/mysql/conf.d
 
     steps:
       - name: Set up Docker Environment
@@ -61,7 +61,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare MySQL config
-        run: mkdir -p /tmp/mysql-cnf && cp .github/mysql.cnf /tmp/mysql-cnf/my.cnf
+        run: |
+          mkdir -p /home/runner/mysql-cnf
+          cp .github/mysql.cnf /home/runner/mysql-cnf/my.cnf
 
       - name: Wait for MySQL from webserver
         run: |
