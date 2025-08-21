@@ -27,6 +27,11 @@ jobs:
           DB_USER: user
           DB_PASSWORD: password
           DB_DRIVER: mysql
+          APP_ENV: dev
+          APP_URL: http://localhost
+          APP_SECRET: shopware
+          INSTANCE_ID: shopware
+          DATABASE_URL: mysql://user:password@mysql/shopware
         ports:
           - 80:80
         volumes:
