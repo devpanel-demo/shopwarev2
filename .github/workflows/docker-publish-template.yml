@@ -50,13 +50,16 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-        command: --log-bin-trust-function-creators=1
     steps:
       - name: Set up Docker Environment
         uses: docker/setup-buildx-action@v3
 
       - name: Check out code
         uses: actions/checkout@v4
+
+      - name: Enable log_bin_trust_function_creators
+        run: |
+          mysql -hlocalhost -uroot -proot -e "SET GLOBAL log_bin_trust_function_creators = 1;"
 
       - name: Wait for MySQL from webserver
         run: |
