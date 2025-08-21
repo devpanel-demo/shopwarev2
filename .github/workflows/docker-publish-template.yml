@@ -59,6 +59,7 @@ jobs:
 
       - name: Enable log_bin_trust_function_creators
         run: |
+          docker exec ${{ job.services.webserver.id }} \
           mysql -hmysql -uroot -proot -e "SET GLOBAL log_bin_trust_function_creators = 1;"
 
       - name: Wait for MySQL from webserver
