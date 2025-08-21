@@ -72,7 +72,7 @@ echo ">>> Install dev-tools";
 composer require --dev shopware/dev-tools
 
 echo ">>> Import database";
-bin/console framework:demodata
-bin/console dal:refresh:index
+APP_ENV=prod bin/console framework:demodata
+APP_ENV=prod  bin/console dal:refresh:index
 bin/console cache:clear
 echo ">>> Successful, please refresh your web page.";
