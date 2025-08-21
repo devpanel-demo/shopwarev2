@@ -50,20 +50,13 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-        volumes:
-          - /home/runner/mysql-cnf:/etc/mysql/conf.d
-
+        command: --log-bin-trust-function-creators=1
     steps:
       - name: Set up Docker Environment
         uses: docker/setup-buildx-action@v3
 
       - name: Check out code
         uses: actions/checkout@v4
-
-      - name: Prepare MySQL config
-        run: |
-          mkdir -p /home/runner/mysql-cnf
-          cp .github/mysql.cnf /home/runner/mysql-cnf/my.cnf
 
       - name: Wait for MySQL from webserver
         run: |
