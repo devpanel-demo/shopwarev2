@@ -59,7 +59,7 @@ fi
 
 cd $APP_ROOT
 composer install
-mkdir files
+mkdir -p files
 sudo chown -R $APACHE_RUN_USER:$APACHE_RUN_GROUP public/ files/
 
 echo ">>> Install shopware package";
