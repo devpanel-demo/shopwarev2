@@ -45,37 +45,34 @@ sudo chmod -R 775 vendor/ var/ public/ files/
 #   fi
 # fi
 
-# Check if database exists
-if mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" 2>/dev/null; then
-    # echo "Database '$DB_NAME' exists. Running Shopware install..."
-    # SAFE_CONNECT_STRING=$(printf '%s' "$CONNECT_STRING" | sed -e 's/[&|/$\\]/\\&/g')
-    # if grep -q '^DATABASE_URL=' "$APP_ROOT/.env.local"; then
-    #   sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${SAFE_CONNECT_STRING}\"|" "$APP_ROOT/.env.local"
-    # else
-    #   echo "DATABASE_URL=\"${CONNECT_STRING}\"" >> "$APP_ROOT/.env.local"
-    # fi
-
-    echo '> Install shopware package';
-    sudo -E bin/console system:install --basic-setup --force
-
-    sudo chown -R www-data:www-data var/ public/
-    sudo chmod -R 775 var/ public/
-    bin/console cache:clear
-
-    # Allow composer plugin without prompt
-    echo '> allow-plugins'
-    composer config --no-plugins allow-plugins.php-http/discovery true
-
-    # Install profiler and other dev tools, eg Faker for demo data generation
-    echo '> Install dev-tools'
-    composer require --dev shopware/dev-tools
-
-    echo "> Import database"
-    bin/console framework:demodata
-    bin/console dal:refresh:index
-    bin/console cache:clear
-
-    echo "> Successful, please refresh your web page."
-else
-    echo "Database '$DB_NAME' does not exist. Skipping install."
+if [[ ! -n "$APACHE_RUN_USER" ]]; then
+  export APACHE_RUN_USER=www-data
 fi
+if [[ ! -n "$APACHE_RUN_GROUP" ]]; then
+  export APACHE_RUN_GROUP=www-data
+fi
+
+#== If webRoot has not been difined, we will set appRoot to webRoot
+if [[ ! -n "$WEB_ROOT" ]]; then
+  export WEB_ROOT=$APP_ROOT
+fi
+
+cd $APP_ROOT
+composer install
+mkdir files
+sudo chown -R $APACHE_RUN_USER:$APACHE_RUN_GROUP public/ files/
+
+echo ">>> Install shopware package";
+sudo -E bin/console system:install --basic-setup --force
+
+echo ">>> allow-plugins";
+composer config --no-plugins allow-plugins.php-http/discovery true
+
+echo ">>> Install dev-tools";
+composer require --dev shopware/dev-tools
+
+echo ">>> Import database";
+bin/console framework:demodata
+bin/console dal:refresh:index
+bin/console cache:clear
+echo ">>> Successful, please refresh your web page.";
