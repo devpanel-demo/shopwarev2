@@ -72,8 +72,8 @@ bin/console user:create devpanel --password=devpanel --email=developer@devpanel.
 echo ">>> allow-plugins";
 composer config --no-plugins allow-plugins.php-http/discovery true
 
-echo ">>> Import database";
-APP_ENV=prod bin/console framework:demodata
-APP_ENV=prod  bin/console dal:refresh:index
-bin/console cache:clear
+# echo ">>> Import database";
+# APP_ENV=prod bin/console framework:demodata
+# APP_ENV=prod  bin/console dal:refresh:index
+# bin/console cache:clear
 echo ">>> Successful, please refresh your web page.";
