@@ -64,7 +64,7 @@ echo ">>> Install Dependencies";
 composer install --no-interaction --optimize-autoloader
 
 echo ">>> Install Shopware Application";
-bin/console system:install --basic-setup --force
+DATABASE_URL="$DATABASE_URL" bin/console system:install --basic-setup --force
 
 echo ">>> Add Devpanel Admin User";
 bin/console user:create devpanel --password=devpanel --email=developer@devpanel.com --firstName=DevPanel
